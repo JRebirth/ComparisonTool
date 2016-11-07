@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.jrebirth</groupId>
+		<artifactId>ria</artifactId>
+		<version>3.0.0</version>
+	</parent>
+
+	<groupId>org.jrebirth.demo</groupId>
+	<artifactId>comparisontool</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>Comparison Tool Comparator</name>
+	<url>http://www.jrebirth.org</url>
+	<description>Tool used to compare jar version from 2 folders</description>
+
+	<properties>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<jrebirth.version>8.5.1-SNAPSHOT</jrebirth.version>
+
+		<archiveName>ComparisonTool</archiveName>
+		<exeIcon>src/main/resources/images/FC.ico</exeIcon>
+		<appClass>org.jrebirth.demo.comparisontool.ComparisonApplication</appClass>
+
+		<appletWidth>800</appletWidth>
+		<appletHeight>600</appletHeight>
+
+	</properties>
+
+	<dependencies>
+		<!-- Use logback logger -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jrebirth.af</groupId>
+			<artifactId>preloader</artifactId>
+			<version>${jrebirth.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jrebirth.af</groupId>
+			<artifactId>core</artifactId>
+			<version>${jrebirth.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jrebirth.af</groupId>
+			<artifactId>processor</artifactId>
+			<version>${jrebirth.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+	</dependencies>
+
+</project>
