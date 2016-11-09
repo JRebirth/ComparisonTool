@@ -47,35 +47,35 @@ public class FileComparison implements Comparable<FileComparison> {
     }
 
     public String sourceName() {
-        return name(this.source.getName());
+        return this.source != null ? name(this.source.getName()) : "";
     }
 
     public String targetName() {
-        return name(this.target.getName());
+        return this.target != null ? name(this.target.getName()) : "";
     }
 
     public String sourceVersion() {
-        return version(this.source.getName());
+        return this.source != null ? version(this.source.getName()) : "";
     }
 
     public String targetVersion() {
-        return version(this.target.getName());
+        return this.target != null ? version(this.target.getName()) : "";
     }
 
     public String sourceQualifier() {
-        return qualifier(this.source.getName());
+        return this.source != null ? qualifier(this.source.getName()) : "";
     }
 
     public String targetQualifier() {
-        return qualifier(this.target.getName());
+        return this.target != null ? qualifier(this.target.getName()) : "";
     }
 
     public String sourceDate() {
-        return sdf.format(new Date(this.source.lastModified()));
+        return this.source != null ? sdf.format(new Date(this.source.lastModified())) : "";
     }
 
     public String targetDate() {
-        return sdf.format(new Date(this.target.lastModified()));
+        return this.target != null ? sdf.format(new Date(this.target.lastModified())) : "";
     }
 
     private String name(final String s) {
@@ -113,7 +113,7 @@ public class FileComparison implements Comparable<FileComparison> {
                 sourceName().equals(targetName()) &&
                 sourceVersion().equals(targetVersion()) &&
                 sourceQualifier().equals(targetQualifier()) &&
-                sourceDate().compareTo(targetDate()) < 0;
+                sourceDate().compareTo(targetDate()) > 0;
     }
 
     public boolean isMissing() {
@@ -127,8 +127,8 @@ public class FileComparison implements Comparable<FileComparison> {
     public boolean isUpgraded() {
         return this.source != null && this.target != null &&
                 sourceName().equals(targetName()) &&
-                (compareVersion(sourceVersion(), targetVersion()) < 0 ||
-                        sourceVersion().equals(targetVersion()) && sourceQualifier().compareTo(targetQualifier()) < 0);
+                (compareVersion(sourceVersion(), targetVersion()) > 0 ||
+                        sourceVersion().equals(targetVersion()) && sourceQualifier().compareTo(targetQualifier()) > 0);
     }
 
     private int compareVersion(final String sourceVersion, final String targetVersion) {
@@ -151,8 +151,8 @@ public class FileComparison implements Comparable<FileComparison> {
     public boolean isDowngraded() {
         return this.source != null && this.target != null &&
                 sourceName().equals(targetName()) &&
-                (compareVersion(sourceVersion(), targetVersion()) > 0 ||
-                        sourceVersion().equals(targetVersion()) && sourceQualifier().compareTo(targetQualifier()) > 0);
+                (compareVersion(sourceVersion(), targetVersion()) < 0 ||
+                        sourceVersion().equals(targetVersion()) && sourceQualifier().compareTo(targetQualifier()) < 0);
     }
 
     @Override
@@ -160,22 +160,22 @@ public class FileComparison implements Comparable<FileComparison> {
         return this.source.compareTo(o.getSource());
     }
 
-	public String status() {
-		if(isSame()){
-			return "Same";
-		} else if(isDowngraded()){
-			return "Downgraded";
-		} else if(isMissing()){
-			return "Missing";
-		} else if(isNewer()){
-			return "Newer";
-		} else if(isUpdated()){
-			return "Updated";
-		} else if(isUpgraded()){
-			return "Upgraded";
-		}
-		
-		return "";
-	}
+    public String status() {
+        if (isSame()) {
+            return "Same";
+        } else if (isDowngraded()) {
+            return "Downgraded";
+        } else if (isMissing()) {
+            return "Missing";
+        } else if (isNewer()) {
+            return "Newer";
+        } else if (isUpdated()) {
+            return "Updated";
+        } else if (isUpgraded()) {
+            return "Upgraded";
+        }
+
+        return "";
+    }
 
 }

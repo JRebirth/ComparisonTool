@@ -120,7 +120,7 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
         gp.setHgap(5);
         gp.setVgap(5);
 
-        final Label sourceLbl = new Label("Source Path:");
+        final Label sourceLbl = new Label("New Path:");
         GridPane.setConstraints(sourceLbl, 0, 0, 1, 1);
 
         this.sourceText = new TextField();
@@ -135,7 +135,7 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
 
         this.openSource.setOnAction(controller()::chooseSource);
 
-        final Label targetLbl = new Label("Target Path:");
+        final Label targetLbl = new Label("Reference Path:");
         GridPane.setConstraints(targetLbl, 0, 1, 1, 1);
 
         this.targetText = new TextField();
@@ -271,10 +271,10 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
         targetDateColumn.setCellValueFactory(this::getColumnContent);
         targetDateColumn.setCellFactory(this::getTableCell);
 
-        final TableColumn<FileComparison, String> sourceColumn = new TableColumn<>("Source");
+        final TableColumn<FileComparison, String> sourceColumn = new TableColumn<>("New Path");
         sourceColumn.getColumns().setAll(sourceNameColumn, sourceVersionColumn, sourceQualifierColumn, sourceDateColumn);
 
-        final TableColumn<FileComparison, String> targetColumn = new TableColumn<>("Target");
+        final TableColumn<FileComparison, String> targetColumn = new TableColumn<>("Reference Path");
         targetColumn.getColumns().setAll(targetNameColumn, targetVersionColumn, targetQualifierColumn, targetDateColumn);
 
         this.table.getColumns().setAll(sourceColumn, targetColumn);

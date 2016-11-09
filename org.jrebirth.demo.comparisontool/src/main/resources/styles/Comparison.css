@@ -1,30 +1,34 @@
 .root {
-	app-hover-light:RGB(240, 240, 240);
-	app-hover-dark:RGB(200, 200, 200);
-    app-color-text-fill: RGB(60, 63, 63);
+	custom-lightgray:RGB(240, 240, 240);
+	custom-darkgray:RGB(200, 200, 200);
+    custom-text-fill: RGB(60, 63, 63);
 }
 
 .toggle-button {
+	-fx-border-radius: 1px;
     -fx-border-width:2px;
 	-fx-border-color : transparent;
     -fx-border-radius: 2px;  
 }
 
-.toggle-button:selected {
+.toggle-button:selected, .toggle-button:selected:hover {
     -fx-text-fill: black;
     -fx-font-weight : bolder;	
     -fx-border-color : grey;
+}
+.toggle-button:hover {
+    -fx-border-color : custom-darkgray;
 }
 
 
 .button, .button.image {
     -fx-background-color: transparent;
     -fx-font-weight:bold;
-    -fx-text-fill: app-color-text-fill;
+    -fx-text-fill: custom-text-fill;
     -fx-border-radius: 3px;
     -fx-border-width: 1px;
     -fx-border-style: solid;
-    -fx-border-color: app-hover-dark;
+    -fx-border-color: custom-darkgray;
 }
 
 .button.image {
@@ -35,11 +39,11 @@
 }
 
 .button:hover, .button.image:hover {
-    -fx-background-color: app-hover-light;
-    -fx-border-color: app-hover-dark;
+    -fx-background-color: custom-lightgray;
+    -fx-border-color: custom-darkgray;
 }
 
 .button:pressed, .button.image:pressed{
-    -fx-background-color: app-hover-dark;
-    -fx-border-color: app-hover-light;
+    -fx-background-color: custom-darkgray;
+    -fx-border-color: custom-lightgray;
 }

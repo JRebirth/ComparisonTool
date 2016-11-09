@@ -1,22 +1,29 @@
 package org.jrebirth.demo.comparisontool.ui;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 import org.jrebirth.af.api.wave.Wave;
 import org.jrebirth.af.api.wave.annotation.OnWave;
 import org.jrebirth.af.core.ui.object.DefaultObjectModel;
+import org.jrebirth.af.core.wave.JRebirthItems;
 import org.jrebirth.demo.comparisontool.bean.FileComparison;
 import org.jrebirth.demo.comparisontool.bean.PathToCompare;
+import org.jrebirth.demo.comparisontool.command.DisplayExceptionCommand;
 import org.jrebirth.demo.comparisontool.resources.ComparisonParameters;
 import org.jrebirth.demo.comparisontool.service.ComparatorService;
 import org.jrebirth.demo.comparisontool.service.ExportCSVService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +53,8 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         object().upgraded(false);
         object().downgraded(false);
 
+        // FIXME shall be done by getter !!!
+        object().lastResult(new ArrayList<>());
         object().filteredContent(new ArrayList<>());
     }
 
@@ -103,8 +112,17 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         object().pTargetPath().addListener(cl);
 
         view().getStartButton().disableProperty().bind(bexpr);
+
+        final SimpleListProperty<FileComparison> filteredListProperty = new SimpleListProperty<>(object().pFilteredContent());
+        view().getExportCSV().disableProperty().bind(filteredListProperty.emptyProperty());
         
-        //view().getExportCSV().disableProperty().bind(Bindings.createBooleanBinding(()->object().pFilteredContent().isEmpty()));
+        final SimpleListProperty<FileComparison> listProperty = new SimpleListProperty<>(object().pLastResult());
+        view().getMissing().disableProperty().bind(listProperty.emptyProperty());
+        view().getDowngraded().disableProperty().bind(listProperty.emptyProperty());
+        view().getNewer().disableProperty().bind(listProperty.emptyProperty());
+        view().getSame().disableProperty().bind(listProperty.emptyProperty());
+        view().getUpdated().disableProperty().bind(listProperty.emptyProperty());
+        view().getUpgraded().disableProperty().bind(listProperty.emptyProperty());
 
         object().pSame().addListener(this::updateFilter);
         object().pDowngraded().addListener(this::updateFilter);
@@ -131,13 +149,27 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
 
         view().hideProgress();
     }
-    
+
     @OnWave(ExportCSVService.EXPORT_CSV_DONE)
-    public void achieveExport(final boolean result, final Wave wave) {
-    	
-    	// manage boolean
+    public void achieveExport(final File resultFile, final Wave wave) {
 
         view().hideProgress();
+
+        if (resultFile != null && resultFile.exists()) {
+            try {
+                java.awt.Desktop.getDesktop().open(resultFile);
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @OnWave(ExportCSVService.FILE_NOT_FOUND)
+    public void manageException(/* final Throwable t, */ final Wave wave) {
+
+        view().hideProgress();
+
+        callCommand(DisplayExceptionCommand.class, wave.getData(JRebirthItems.exceptionItem), wave.getData(JRebirthItems.waveItem));
     }
 
     public void updateFilter(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
