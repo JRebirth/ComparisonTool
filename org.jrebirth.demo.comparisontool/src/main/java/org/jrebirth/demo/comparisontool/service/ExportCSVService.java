@@ -33,14 +33,12 @@ public interface ExportCSVService extends Service {
     };
 
     /** Perform something. */
-    WaveType DO_FILE_NOT_FOUND = waveType(FILE_NOT_FOUND).items(EXPORTED_FILE);
-
-    /** Perform something. */
+    @SuppressWarnings("unchecked")
     WaveType DO_EXPORT_CSV = waveType("EXPORT_CSV")
                                                    .items(EXPORTED_FILE, CONTENT)
                                                    .returnItem(EXPORTED_FILE)
                                                    .returnAction(EXPORT_CSV_DONE)
-                                                   .onException(DO_FILE_NOT_FOUND, FileNotFoundException.class);
+                                                   .onException(waveType(FILE_NOT_FOUND), FileNotFoundException.class);
 
     String NEW_LINE_SEPARATOR = "\n";
 
