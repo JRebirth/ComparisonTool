@@ -21,7 +21,7 @@ import org.jrebirth.demo.comparisontool.ui.CheckerModel;
  *
  * @author
  */
-@Configuration(value = "(.*settings|jrebirth)", extension = "properties")
+@Configuration(value = "(.*settings|.*jrebirth)", extension = "properties")
 public final class ComparisonApplication extends DefaultApplication<StackPane> {
 
     /**
