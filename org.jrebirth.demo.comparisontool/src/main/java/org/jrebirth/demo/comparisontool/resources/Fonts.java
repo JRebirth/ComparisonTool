@@ -8,6 +8,6 @@ import org.jrebirth.af.core.resource.font.RealFont;
 public interface Fonts {
 
     /** The splash font. */
-    FontItem SPLASH = create(new RealFont(FontNames.DINk, 24));
+    FontItem MAIN = create(new RealFont(FontNames.DoulosSIL, 16));
 
 }

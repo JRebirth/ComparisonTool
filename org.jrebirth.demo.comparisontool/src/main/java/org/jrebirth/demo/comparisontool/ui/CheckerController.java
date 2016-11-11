@@ -14,6 +14,7 @@ import org.jrebirth.af.core.wave.JRebirthWaves;
 import org.jrebirth.af.core.wave.WBuilder;
 import org.jrebirth.demo.comparisontool.service.ComparatorService;
 import org.jrebirth.demo.comparisontool.service.ExportCSVService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,7 @@ public final class CheckerController extends AbstractController<CheckerModel, Ch
      */
     void onMouseClicked(final MouseEvent event) {
 
-        LOGGER.debug("MouseClicked => Call Sample Command");
+        LOGGER.debug("Start button clicked => Call Comparison Service");
 
         view().getTable().getItems().clear();
 
@@ -75,60 +76,57 @@ public final class CheckerController extends AbstractController<CheckerModel, Ch
                            WBuilder.waveData(ComparatorService.TARGET, model().object().targetPath()));
 
     }
-    
+
     public void exportCSV(final ActionEvent ae) {
-        
-    	final FileChooser fc = new FileChooser();
-        fc.setInitialDirectory(new File(".")); //to be stored
-        fc.setInitialFileName("Export.csv"); //to be stored
+
+        final FileChooser fc = new FileChooser();
+        fc.setInitialDirectory(new File(".")); // to be stored
+        fc.setInitialFileName("Export.csv"); // to be stored
         fc.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Comma Separated Value", "*.csv"));
-        
-        File exportedFile =fc.showSaveDialog(model().localFacade().getGlobalFacade().application().stage());
-    	
-        if(exportedFile != null ){ 
-        	if(!exportedFile.exists()){
-        		try {
-					exportedFile.createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-        	}
-        	if(exportedFile.exists()){
-        	// Manage Default Command Button
-            model().returnData(ExportCSVService.class,
-            		ExportCSVService.DO_EXPORT_CSV,
-                               WBuilder.waveData(JRebirthWaves.PROGRESS_BAR, view().getProgressBar()),
-                               WBuilder.waveData(JRebirthWaves.TASK_TITLE, view().getProgressTitle()),
-                               WBuilder.waveData(JRebirthWaves.TASK_MESSAGE, view().getProgressMessage()),
-                               WBuilder.waveData(ExportCSVService.EXPORTED_FILE, exportedFile),
-                               WBuilder.waveData(ExportCSVService.CONTENT, model().object().filteredContent()));
-        	}
+
+        final File exportedFile = fc.showSaveDialog(model().localFacade().getGlobalFacade().application().stage());
+
+        if (exportedFile != null) {
+            if (!exportedFile.exists()) {
+                try {
+                    exportedFile.createNewFile();
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (exportedFile.exists()) {
+                // Manage Default Command Button
+                model().returnData(ExportCSVService.class,
+                                   ExportCSVService.DO_EXPORT_CSV,
+                                   WBuilder.waveData(JRebirthWaves.PROGRESS_BAR, view().getProgressBar()),
+                                   WBuilder.waveData(JRebirthWaves.TASK_TITLE, view().getProgressTitle()),
+                                   WBuilder.waveData(JRebirthWaves.TASK_MESSAGE, view().getProgressMessage()),
+                                   WBuilder.waveData(ExportCSVService.EXPORTED_FILE, exportedFile),
+                                   WBuilder.waveData(ExportCSVService.CONTENT, model().object().filteredContent()));
+            }
         }
-    	
+
     }
-    
-    
 
     public void chooseSource(final ActionEvent ae) {
-        
+
         model().object().sourcePath(chooseFolder(model().object().sourcePath()));
     }
 
     public void chooseTarget(final ActionEvent ae) {
-        
-    	model().object().targetPath(chooseFolder(model().object().targetPath()));
-    }
-    
-	/**
-	 * 
-	 */
-	private File chooseFolder(File currentFolder) {
-		final DirectoryChooser fc = new DirectoryChooser();
-        
-		fc.setInitialDirectory( currentFolder != null && currentFolder.exists() ? currentFolder : new File("."));
-        
-        return fc.showDialog(model().localFacade().getGlobalFacade().application().stage());
-	}
 
+        model().object().targetPath(chooseFolder(model().object().targetPath()));
+    }
+
+    /**
+     * 
+     */
+    private File chooseFolder(File currentFolder) {
+        final DirectoryChooser fc = new DirectoryChooser();
+
+        fc.setInitialDirectory(currentFolder != null && currentFolder.exists() ? currentFolder : new File("."));
+
+        return fc.showDialog(model().localFacade().getGlobalFacade().application().stage());
+    }
 
 }

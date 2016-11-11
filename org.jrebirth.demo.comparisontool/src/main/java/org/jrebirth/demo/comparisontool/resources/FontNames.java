@@ -4,7 +4,7 @@ import org.jrebirth.af.api.resource.font.FontName;
 
 public enum FontNames implements FontName {
 
-    /** The Dink font. */
-    DINk;
+    /** The default font. */
+    DoulosSIL;
 
 }

@@ -8,6 +8,8 @@ import org.jrebirth.af.core.resource.image.ImageEnum;
  */
 public enum Images implements ImageEnum {
 
+    // @formatter:off
+    
     /** The Open icon used to open folder chooser. */
     Open {{ rel("Open", ImageExtension.PNG); }},
     

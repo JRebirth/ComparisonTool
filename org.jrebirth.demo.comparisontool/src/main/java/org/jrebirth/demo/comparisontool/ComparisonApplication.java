@@ -63,7 +63,7 @@ public final class ComparisonApplication extends DefaultApplication<StackPane> {
     @Override
     protected List<? extends ResourceItem<?, ?, ?>> getResourceToPreload() {
         return Arrays.asList(new FontItem[] {
-                Fonts.SPLASH,
+                Fonts.MAIN,
         });
     }
 

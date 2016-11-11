@@ -10,8 +10,6 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 
 import org.jrebirth.af.api.wave.Wave;
 import org.jrebirth.af.api.wave.annotation.OnWave;
@@ -53,9 +51,6 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         object().upgraded(false);
         object().downgraded(false);
 
-        // FIXME shall be done by getter !!!
-        object().lastResult(new ArrayList<>());
-        object().filteredContent(new ArrayList<>());
     }
 
     /**
@@ -75,22 +70,18 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         Bindings.bindBidirectional(view().sourceText().textProperty(), object().pSourcePath(), new FileStringConverter());
         Bindings.bindBidirectional(view().targetText().textProperty(), object().pTargetPath(), new FileStringConverter());
 
-        Bindings.bindBidirectional(view().getSame().selectedProperty(), object().pSame());
-        Bindings.bindBidirectional(view().getUpdated().selectedProperty(), object().pUpdated());
-        Bindings.bindBidirectional(view().getMissing().selectedProperty(), object().pMissing());
-        Bindings.bindBidirectional(view().getNewer().selectedProperty(), object().pNewer());
-        Bindings.bindBidirectional(view().getUpgraded().selectedProperty(), object().pUpgraded());
-        Bindings.bindBidirectional(view().getDowngraded().selectedProperty(), object().pDowngraded());
-
         Bindings.bindContentBidirectional(view().getTable().getItems(), object().pFilteredContent());
 
-        view().getSame().textProperty().bind(object().pSameCount().asString("Same (%s)"));
-        view().getUpdated().textProperty().bind(object().pUpdatedCount().asString("Updated (%s)"));
-        view().getMissing().textProperty().bind(object().pMissingCount().asString("Missing (%s)"));
-        view().getNewer().textProperty().bind(object().pNewerCount().asString("Newer (%s)"));
-        view().getUpgraded().textProperty().bind(object().pUpgradedCount().asString("Upgraded (%s)"));
-        view().getDowngraded().textProperty().bind(object().pDowngradedCount().asString("Downgraded (%s)"));
+        bindFilterButton();
 
+        bindButtonEnabling();
+
+    }
+
+    /**
+     * TODO To complete.
+     */
+    private void bindButtonEnabling() {
         final BooleanBinding bexpr = new BooleanBinding() {
 
             @Override
@@ -115,7 +106,7 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
 
         final SimpleListProperty<FileComparison> filteredListProperty = new SimpleListProperty<>(object().pFilteredContent());
         view().getExportCSV().disableProperty().bind(filteredListProperty.emptyProperty());
-        
+
         final SimpleListProperty<FileComparison> listProperty = new SimpleListProperty<>(object().pLastResult());
         view().getMissing().disableProperty().bind(listProperty.emptyProperty());
         view().getDowngraded().disableProperty().bind(listProperty.emptyProperty());
@@ -123,6 +114,22 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         view().getSame().disableProperty().bind(listProperty.emptyProperty());
         view().getUpdated().disableProperty().bind(listProperty.emptyProperty());
         view().getUpgraded().disableProperty().bind(listProperty.emptyProperty());
+    }
+
+    private void bindFilterButton() {
+        Bindings.bindBidirectional(view().getSame().selectedProperty(), object().pSame());
+        Bindings.bindBidirectional(view().getUpdated().selectedProperty(), object().pUpdated());
+        Bindings.bindBidirectional(view().getMissing().selectedProperty(), object().pMissing());
+        Bindings.bindBidirectional(view().getNewer().selectedProperty(), object().pNewer());
+        Bindings.bindBidirectional(view().getUpgraded().selectedProperty(), object().pUpgraded());
+        Bindings.bindBidirectional(view().getDowngraded().selectedProperty(), object().pDowngraded());
+
+        view().getSame().textProperty().bind(object().pSameCount().asString("Same (%s)"));
+        view().getUpdated().textProperty().bind(object().pUpdatedCount().asString("Updated (%s)"));
+        view().getMissing().textProperty().bind(object().pMissingCount().asString("Missing (%s)"));
+        view().getNewer().textProperty().bind(object().pNewerCount().asString("Newer (%s)"));
+        view().getUpgraded().textProperty().bind(object().pUpgradedCount().asString("Upgraded (%s)"));
+        view().getDowngraded().textProperty().bind(object().pDowngradedCount().asString("Downgraded (%s)"));
 
         object().pSame().addListener(this::updateFilter);
         object().pDowngraded().addListener(this::updateFilter);
@@ -130,7 +137,6 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         object().pNewer().addListener(this::updateFilter);
         object().pUpdated().addListener(this::updateFilter);
         object().pUpgraded().addListener(this::updateFilter);
-
     }
 
     /**
@@ -165,7 +171,7 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
     }
 
     @OnWave(ExportCSVService.FILE_NOT_FOUND)
-    public void manageException(/* final Throwable t, */ final Wave wave) {
+    public void manageException(final Wave wave) {
 
         view().hideProgress();
 
@@ -204,17 +210,17 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
                 }
 
                 if (fc.isSame()) {
-                    object().pSameCount().set(object().pSameCount().get() + 1);
+                    object().sameCount(object().sameCount() + 1);
                 } else if (fc.isUpdated()) {
-                    object().pUpdatedCount().set(object().pUpdatedCount().get() + 1);
+                    object().updatedCount(object().updatedCount() + 1);
                 } else if (fc.isMissing()) {
-                    object().pMissingCount().set(object().pMissingCount().get() + 1);
+                    object().missingCount(object().missingCount() + 1);
                 } else if (fc.isNewer()) {
-                    object().pNewerCount().set(object().pNewerCount().get() + 1);
+                    object().newerCount(object().newerCount() + 1);
                 } else if (fc.isUpgraded()) {
-                    object().pUpgradedCount().set(object().pUpgradedCount().get() + 1);
+                    object().upgradedCount(object().upgradedCount() + 1);
                 } else if (fc.isDowngraded()) {
-                    object().pDowngradedCount().set(object().pDowngradedCount().get() + 1);
+                    object().downgradedCount(object().downgradedCount() + 1);
                 }
 
             }

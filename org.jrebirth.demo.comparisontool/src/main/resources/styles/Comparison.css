@@ -2,6 +2,9 @@
 	custom-lightgray:RGB(240, 240, 240);
 	custom-darkgray:RGB(200, 200, 200);
     custom-text-fill: RGB(60, 63, 63);
+    
+    -fx-font-family: "Doulos SIL";
+    -fx-font-size:1.3em;
 }
 
 .toggle-button {
