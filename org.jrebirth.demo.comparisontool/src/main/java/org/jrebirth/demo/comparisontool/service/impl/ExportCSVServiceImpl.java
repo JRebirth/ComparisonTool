@@ -33,7 +33,7 @@ public final class ExportCSVServiceImpl extends DefaultService implements Export
     }
 
     @Override
-    public File doExportCsv(File exportedFile, List<FileComparison> content, Wave wave) throws InterruptedException {
+    public File doExportCsv(final File exportedFile, final List<FileComparison> content, final Wave wave) throws InterruptedException {
 
         updateTitle(wave, "Export to CSV file");
 

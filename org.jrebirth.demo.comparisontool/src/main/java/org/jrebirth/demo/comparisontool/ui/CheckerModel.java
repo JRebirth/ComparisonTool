@@ -94,7 +94,7 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         final ChangeListener<File> cl = new ChangeListener<File>() {
 
             @Override
-            public void changed(ObservableValue<? extends File> observable, File oldValue, File newValue) {
+            public void changed(final ObservableValue<? extends File> observable, final File oldValue, final File newValue) {
                 bexpr.invalidate();
             }
         };

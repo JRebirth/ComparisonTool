@@ -15,7 +15,7 @@ import org.jrebirth.demo.comparisontool.bean.FileComparison;
 
 /**
  * The interface <strong>ComparatorService</strong>.
- * 
+ *
  * @author Sébastien Bordes
  */
 @RegistrationPoint
@@ -42,7 +42,7 @@ public interface ComparatorService extends Service {
      * Do Comparison.
      *
      * @param wave the source wave
-     * 
+     *
      * @throws InterruptedException
      */
     List<FileComparison> doCompare(final File sourceFolder, final File targetFolder, final Wave wave) throws InterruptedException;

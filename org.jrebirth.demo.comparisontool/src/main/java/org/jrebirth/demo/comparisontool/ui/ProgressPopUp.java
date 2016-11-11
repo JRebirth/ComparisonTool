@@ -1,7 +1,5 @@
 package org.jrebirth.demo.comparisontool.ui;
 
-import org.jrebirth.af.core.concurrent.JRebirthThread;
-
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,6 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import org.jrebirth.af.core.concurrent.JRebirthThread;
 
 public class ProgressPopUp {
 
@@ -64,9 +64,9 @@ public class ProgressPopUp {
     }
 
     public void start() {
-    	this.popup.initOwner(JRebirthThread.getThread().getApplication().stage());
-    	this.popup.setX(this.popup.getOwner().getX() + this.popup.getOwner().getWidth() /2 - this.popup.getWidth()/2);
-    	this.popup.setY(this.popup.getOwner().getY() + this.popup.getOwner().getHeight() /2 - this.popup.getHeight()/2);
+        this.popup.initOwner(JRebirthThread.getThread().getApplication().stage());
+        this.popup.setX(this.popup.getOwner().getX() + this.popup.getOwner().getWidth() / 2 - this.popup.getWidth() / 2);
+        this.popup.setY(this.popup.getOwner().getY() + this.popup.getOwner().getHeight() / 2 - this.popup.getHeight() / 2);
         this.popup.show();
     }
 

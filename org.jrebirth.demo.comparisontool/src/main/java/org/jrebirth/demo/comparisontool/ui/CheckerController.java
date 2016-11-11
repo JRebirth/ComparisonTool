@@ -119,9 +119,9 @@ public final class CheckerController extends AbstractController<CheckerModel, Ch
     }
 
     /**
-     * 
+     *
      */
-    private File chooseFolder(File currentFolder) {
+    private File chooseFolder(final File currentFolder) {
         final DirectoryChooser fc = new DirectoryChooser();
 
         fc.setInitialDirectory(currentFolder != null && currentFolder.exists() ? currentFolder : new File("."));

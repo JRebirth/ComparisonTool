@@ -35,6 +35,7 @@ import org.jrebirth.af.core.ui.AbstractView;
 import org.jrebirth.demo.comparisontool.bean.FileComparison;
 import org.jrebirth.demo.comparisontool.resources.Colors;
 import org.jrebirth.demo.comparisontool.resources.Images;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +69,7 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
     @OnMouse(Mouse.Clicked)
     private Button startButton;
 
-	private TextField sourceText;
+    private TextField sourceText;
 
     private Button openSource;
 
@@ -82,7 +83,7 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
     private ToggleButton newer;
     private ToggleButton upgraded;
     private ToggleButton downgraded;
-    
+
     private Button exportCSV;
 
     private TableView<FileComparison> table;
@@ -91,9 +92,9 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
 
     /**
      * Default Constructor.
-     * 
+     *
      * @param model the controls view model
-     * 
+     *
      * @throws CoreException if build fails
      */
     public CheckerView(final CheckerModel model) throws CoreException {
@@ -187,7 +188,6 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
         filterBox.getChildren().addAll(this.missing, this.newer, this.same, this.updated, this.upgraded, this.downgraded);
         GridPane.setConstraints(filterBox, 0, 3, 3, 1, HPos.CENTER, VPos.CENTER);
 
-
         this.exportCSV = new Button();
         this.exportCSV.setBorder(Border.EMPTY);
         this.exportCSV.getStyleClass().add("image");
@@ -198,9 +198,9 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
 
         this.exportCSV.setContentDisplay(ContentDisplay.BOTTOM);
         this.exportCSV.setOnAction(controller()::exportCSV);
-        GridPane.setConstraints(exportCSV, 3, 3, 1, 1, HPos.RIGHT, VPos.CENTER);
-        
-        gp.getChildren().addAll(sourceLbl, this.sourceText, this.openSource, targetLbl, this.targetText, this.openTarget, this.startButton, filterBox, exportCSV);
+        GridPane.setConstraints(this.exportCSV, 3, 3, 1, 1, HPos.RIGHT, VPos.CENTER);
+
+        gp.getChildren().addAll(sourceLbl, this.sourceText, this.openSource, targetLbl, this.targetText, this.openTarget, this.startButton, filterBox, this.exportCSV);
 
         return gp;
     }
@@ -209,7 +209,7 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
 
         /*
          * textArea = new TextArea();
-         * 
+         *
          * return textArea;
          */
 
@@ -514,19 +514,19 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
     public StringProperty getProgressMessage() {
         return this.ppu.getProgressMessage();
     }
-    
-    /**
-	 * @return the startButton
-	 */
-	protected Button getStartButton() {
-		return startButton;
-	}
 
-	/**
-	 * @return the exportCSV
-	 */
-	protected Button getExportCSV() {
-		return exportCSV;
-	}
+    /**
+     * @return the startButton
+     */
+    protected Button getStartButton() {
+        return this.startButton;
+    }
+
+    /**
+     * @return the exportCSV
+     */
+    protected Button getExportCSV() {
+        return this.exportCSV;
+    }
 
 }

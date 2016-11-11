@@ -16,7 +16,7 @@ import org.jrebirth.demo.comparisontool.bean.FileComparison;
 
 /**
  * The interface <strong>ExportCSVService</strong>.
- * 
+ *
  * @author Sébastien Bordes
  */
 @RegistrationPoint
@@ -49,9 +49,9 @@ public interface ExportCSVService extends Service {
      * @param exportedFile the file to write in
      * @param content the data to export
      * @param wave the source wave
-     * 
+     *
      * @return the exported file
-     * 
+     *
      * @throws InterruptedException
      */
     File doExportCsv(final File exportedFile, final List<FileComparison> content, final Wave wave) throws InterruptedException;

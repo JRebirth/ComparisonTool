@@ -9,13 +9,13 @@ import org.jrebirth.af.core.resource.image.ImageEnum;
 public enum Images implements ImageEnum {
 
     // @formatter:off
-    
+
     /** The Open icon used to open folder chooser. */
     Open {{ rel("Open", ImageExtension.PNG); }},
-    
+
     /** The Start icon used to trigger the comparison. */
     Start {{ rel("Start", ImageExtension.PNG); }},
-    
+
     /** The Export CSV icon used to export data to a CSV file. */
     ExportCSV {{ rel("ExportCSV", ImageExtension.PNG); }},
 
