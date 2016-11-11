@@ -117,11 +117,11 @@ public class FileComparison implements Comparable<FileComparison> {
     }
 
     public boolean isMissing() {
-        return this.target == null;
+        return this.source == null;
     }
 
     public boolean isNewer() {
-        return this.source == null;
+        return this.target == null;
     }
 
     public boolean isUpgraded() {
