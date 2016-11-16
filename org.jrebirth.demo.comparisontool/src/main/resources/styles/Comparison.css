@@ -23,6 +23,12 @@
     -fx-border-color : custom-darkgray;
 }
 
+.filterButton{
+	-fx-font-size:11pt;
+	-fx-min-height: 30px;
+    -fx-min-width: 100px;
+	
+}
 
 .button, .button.image {
     -fx-background-color: transparent;

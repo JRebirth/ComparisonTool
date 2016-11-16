@@ -29,6 +29,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
 import org.jrebirth.af.api.exception.CoreException;
+import org.jrebirth.af.api.resource.color.ColorItem;
 import org.jrebirth.af.api.ui.annotation.OnMouse;
 import org.jrebirth.af.api.ui.annotation.type.Mouse;
 import org.jrebirth.af.core.ui.AbstractView;
@@ -60,7 +61,7 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
 
     private static final String SOURCE_DATE_COLUMN = "SourceDate";
 
-    private static final String TARGET__DATE_COLUMN = "TargetDate";
+    private static final String TARGET_DATE_COLUMN = "TargetDate";
 
     /** The class logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckerView.class);
@@ -153,40 +154,24 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
 
         this.startButton = new Button("Start Comparison");
         this.startButton.setBorder(Border.EMPTY);
+        this.startButton.setMinWidth(140);
         this.startButton.getStyleClass().add("image");
         this.startButton.setGraphic(new ImageView(Images.Start.get()));
         this.startButton.setContentDisplay(ContentDisplay.BOTTOM);
-        GridPane.setConstraints(this.startButton, 3, 0, 1, 2, HPos.CENTER, VPos.CENTER);
+        GridPane.setConstraints(this.startButton, 3, 0, 2, 2, HPos.CENTER, VPos.CENTER);
 
-        final HBox filterBox = new HBox(5);
+        final HBox filterBox = new HBox(2);
         filterBox.setAlignment(Pos.CENTER);
 
-        this.same = new ToggleButton("Same");
-        this.same.setPrefSize(120, 30);
-        this.same.setBackground(new Background(new BackgroundFill(Colors.Same.get(), CornerRadii.EMPTY, new Insets(0))));
-
-        this.updated = new ToggleButton("Updated");
-        this.updated.setPrefSize(120, 30);
-        this.updated.setBackground(new Background(new BackgroundFill(Colors.Updated.get(), CornerRadii.EMPTY, new Insets(0))));
-
-        this.missing = new ToggleButton("Missing");
-        this.missing.setPrefSize(120, 30);
-        this.missing.setBackground(new Background(new BackgroundFill(Colors.Missing.get(), CornerRadii.EMPTY, new Insets(0))));
-
-        this.newer = new ToggleButton("New");
-        this.newer.setPrefSize(120, 30);
-        this.newer.setBackground(new Background(new BackgroundFill(Colors.Newer.get(), CornerRadii.EMPTY, new Insets(0))));
-
-        this.upgraded = new ToggleButton("Upgraded");
-        this.upgraded.setPrefSize(120, 30);
-        this.upgraded.setBackground(new Background(new BackgroundFill(Colors.Upgraded.get(), CornerRadii.EMPTY, new Insets(0))));
-
-        this.downgraded = new ToggleButton("Downgraded");
-        this.downgraded.setPrefSize(120, 30);
-        this.downgraded.setBackground(new Background(new BackgroundFill(Colors.Downgraded.get(), CornerRadii.EMPTY, new Insets(0))));
+        this.same = buildFilterButton("Same", Colors.Same);
+        this.updated = buildFilterButton("Updated", Colors.Updated);
+        this.missing = buildFilterButton("Missing", Colors.Missing);
+        this.newer = buildFilterButton("New", Colors.Newer);
+        this.upgraded = buildFilterButton("Upgraded", Colors.Upgraded);
+        this.downgraded = buildFilterButton("Downgraded", Colors.Downgraded);
 
         filterBox.getChildren().addAll(this.missing, this.newer, this.same, this.updated, this.upgraded, this.downgraded);
-        GridPane.setConstraints(filterBox, 0, 3, 3, 1, HPos.CENTER, VPos.CENTER);
+        GridPane.setConstraints(filterBox, 0, 3, 4, 1, HPos.CENTER, VPos.CENTER);
 
         this.exportCSV = new Button();
         this.exportCSV.setBorder(Border.EMPTY);
@@ -198,20 +183,27 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
 
         this.exportCSV.setContentDisplay(ContentDisplay.BOTTOM);
         this.exportCSV.setOnAction(controller()::exportCSV);
-        GridPane.setConstraints(this.exportCSV, 3, 3, 1, 1, HPos.RIGHT, VPos.CENTER);
+        GridPane.setConstraints(this.exportCSV, 4, 3, 1, 1, HPos.RIGHT, VPos.CENTER);
 
         gp.getChildren().addAll(sourceLbl, this.sourceText, this.openSource, targetLbl, this.targetText, this.openTarget, this.startButton, filterBox, this.exportCSV);
 
         return gp;
     }
 
-    private Node buildResultPane() {
+    /**
+     * .
+     * 
+     * @return
+     */
+    private ToggleButton buildFilterButton(String name, ColorItem colorItem) {
+        final ToggleButton tb = new ToggleButton(name);
+        tb.getStyleClass().add("filterButton");
+        // tb.setPrefSize(120, 30);
+        tb.setBackground(new Background(new BackgroundFill(colorItem.get(), CornerRadii.EMPTY, new Insets(0))));
+        return tb;
+    }
 
-        /*
-         * textArea = new TextArea();
-         *
-         * return textArea;
-         */
+    private Node buildResultPane() {
 
         this.table = new TableView<>();
 
@@ -265,7 +257,7 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
         targetQualifierColumn.setCellFactory(this::getTableCell);
 
         final TableColumn<FileComparison, String> targetDateColumn = new TableColumn<>("Date");
-        targetDateColumn.setId(TARGET__DATE_COLUMN);
+        targetDateColumn.setId(TARGET_DATE_COLUMN);
         targetDateColumn.setPrefWidth(80);
         targetDateColumn.setMinWidth(60);
         targetDateColumn.setCellValueFactory(this::getColumnContent);
@@ -325,46 +317,6 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
                         setBackground(null);
                     }
 
-                    // if (/* column.getId() == SOURCE_COLUMN || */
-                    // column.getId() == TARGET_COLUMN) {
-                    // if (fc.getSource() != null && fc.getTarget() != null &&
-                    // fc.sourceName().equals(fc.targetName())) {
-                    // setStyle("-fx-background-color: lightgreen");
-                    // } else {
-                    // setStyle("-fx-background-color: orange");
-                    // }
-                    // }
-                    //
-                    // if (/* column.getId() == SOURCE_VERSION_COLUMN || */
-                    // column.getId() == TARGET_VERSION_COLUMN) {
-                    // if (fc.getSource() != null && fc.getTarget() != null &&
-                    // fc.sourceVersion().equals(fc.targetVersion())) {
-                    // setStyle("-fx-background-color: lightgreen");
-                    // } else {
-                    // setStyle("-fx-background-color: orange");
-                    // }
-                    // }
-                    //
-                    // if (/* column.getId() == SOURCE_QUALIFIER_COLUMN || */
-                    // column.getId() == TARGET_QUALIFIER_COLUMN) {
-                    // if (fc.getSource() != null && fc.getTarget() != null &&
-                    // fc.sourceQualifier().equals(fc.targetQualifier())) {
-                    // setStyle("-fx-background-color: lightgreen");
-                    // } else {
-                    // setStyle("-fx-background-color: orange");
-                    // }
-                    // }
-                    //
-                    // if (/* column.getId() == SOURCE_DATE_COLUMN || */
-                    // column.getId() == TARGET__DATE_COLUMN) {
-                    // if (fc.getSource() != null && fc.getTarget() != null
-                    // && (fc.sourceDate().equals(fc.targetDate()) ||
-                    // fc.sourceDate().compareTo(fc.targetDate()) >= 0)) {
-                    // setStyle("-fx-background-color: lightgreen");
-                    // } else {
-                    // setStyle("-fx-background-color: orange");
-                    // }
-                    // }
                 }
             }
         };
@@ -403,7 +355,7 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
                 case TARGET_QUALIFIER_COLUMN:
                     res = cell.getValue().targetQualifier();
                     break;
-                case TARGET__DATE_COLUMN:
+                case TARGET_DATE_COLUMN:
                     res = cell.getValue().targetDate();
                     break;
             }
