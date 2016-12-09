@@ -31,6 +31,8 @@
 		<appletWidth>800</appletWidth>
 		<appletHeight>600</appletHeight>
 
+		<source.path></source.path>
+		<target.path></target.path>
 	</properties>
 
 	<dependencies>
