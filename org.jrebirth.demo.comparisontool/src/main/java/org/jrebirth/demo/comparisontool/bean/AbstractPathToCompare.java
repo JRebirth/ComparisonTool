@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.jrebirth.af.api.annotation.bean.Bean;
 
-@Bean("AbstractPathToCompare")
-public abstract class PathToCompareBase {
+@Bean("PathToCompare")
+public abstract class AbstractPathToCompare {
 
     protected boolean missing;
     protected boolean newer;
