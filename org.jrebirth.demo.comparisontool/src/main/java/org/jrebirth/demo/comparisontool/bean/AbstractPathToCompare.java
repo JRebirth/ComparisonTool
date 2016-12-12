@@ -20,8 +20,6 @@ public abstract class AbstractPathToCompare {
 
     protected List<FileComparison> lastResult;
 
-    protected List<FileComparison> filteredContent;
-
     protected int sameCount;
     protected int updatedCount;
     protected int missingCount;

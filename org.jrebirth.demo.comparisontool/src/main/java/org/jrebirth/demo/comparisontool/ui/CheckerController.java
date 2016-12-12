@@ -64,9 +64,10 @@ public final class CheckerController extends AbstractController<CheckerModel, Ch
 
         LOGGER.debug("Start button clicked => Call Comparison Service");
 
-        view().getTable().getItems().clear();
+        // Clear out the table view
+        model().object().pLastResult().clear();
 
-        // Manage Default Command Button
+        // Call service to populate it again
         model().returnData(ComparatorService.class,
                            ComparatorService.DO_COMPARE,
                            WBuilder.waveData(JRebirthWaves.PROGRESS_BAR, view().getProgressBar()),
@@ -102,7 +103,7 @@ public final class CheckerController extends AbstractController<CheckerModel, Ch
                                    WBuilder.waveData(JRebirthWaves.TASK_TITLE, view().getProgressTitle()),
                                    WBuilder.waveData(JRebirthWaves.TASK_MESSAGE, view().getProgressMessage()),
                                    WBuilder.waveData(ExportCSVService.EXPORTED_FILE, exportedFile),
-                                   WBuilder.waveData(ExportCSVService.CONTENT, model().object().filteredContent()));
+                                   WBuilder.waveData(ExportCSVService.CONTENT, view().getTable().getItems()));
             }
         }
 

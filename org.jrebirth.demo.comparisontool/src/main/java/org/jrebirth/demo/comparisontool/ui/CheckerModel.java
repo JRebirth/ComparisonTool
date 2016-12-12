@@ -2,7 +2,6 @@ package org.jrebirth.demo.comparisontool.ui;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javafx.beans.binding.Bindings;
@@ -10,6 +9,8 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 
 import org.jrebirth.af.api.wave.Wave;
 import org.jrebirth.af.api.wave.annotation.OnWave;
@@ -34,6 +35,8 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
 
     /** The class logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckerModel.class);
+    private FilteredList<FileComparison> filteredList;
+    private SortedList<FileComparison> sortedList;
 
     /**
      * {@inheritDoc}
@@ -43,13 +46,15 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         LOGGER.debug("Init Sample Model");
 
         // Initialize default values
-        object().sourcePath(new File(ComparisonParameters.sourcePath.get()));
-        object().targetPath(new File(ComparisonParameters.targetPath.get()));
+        object().sourcePath(new File(ComparisonParameters.sourcePath.get()))
+                .targetPath(new File(ComparisonParameters.targetPath.get()))
+                .missing(false)
+                .newer(false)
+                .upgraded(false)
+                .downgraded(false);
 
-        object().missing(false);
-        object().newer(false);
-        object().upgraded(false);
-        object().downgraded(false);
+        filteredList = new FilteredList<>(object().pLastResult(), this::filter);
+        sortedList = new SortedList<>(filteredList);
 
     }
 
@@ -70,7 +75,8 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         Bindings.bindBidirectional(view().sourceText().textProperty(), object().pSourcePath(), new FileStringConverter());
         Bindings.bindBidirectional(view().targetText().textProperty(), object().pTargetPath(), new FileStringConverter());
 
-        Bindings.bindContentBidirectional(view().getTable().getItems(), object().pFilteredContent());
+        sortedList.comparatorProperty().bind(view().getTable().comparatorProperty());
+        view().getTable().setItems(sortedList);
 
         bindFilterButton();
 
@@ -104,7 +110,7 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
 
         view().getStartButton().disableProperty().bind(bexpr);
 
-        final SimpleListProperty<FileComparison> filteredListProperty = new SimpleListProperty<>(object().pFilteredContent());
+        final SimpleListProperty<FileComparison> filteredListProperty = new SimpleListProperty<>(view().getTable().getItems());
         view().getExportCSV().disableProperty().bind(filteredListProperty.emptyProperty());
 
         final SimpleListProperty<FileComparison> listProperty = new SimpleListProperty<>(object().pLastResult());
@@ -151,7 +157,13 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
     public void displayResult(final List<FileComparison> result, final Wave wave) {
 
         object().lastResult(result);
-        applyFilter();
+
+        object().pSameCount().set((int) result.stream().filter(fc -> fc.isSame()).count());
+        object().pUpdatedCount().set((int) result.stream().filter(fc -> fc.isUpdated()).count());
+        object().pMissingCount().set((int) result.stream().filter(fc -> fc.isMissing()).count());
+        object().pNewerCount().set((int) result.stream().filter(fc -> fc.isNewer()).count());
+        object().pUpgradedCount().set((int) result.stream().filter(fc -> fc.isUpgraded()).count());
+        object().pDowngradedCount().set((int) result.stream().filter(fc -> fc.isDowngraded()).count());
 
         view().hideProgress();
     }
@@ -179,52 +191,21 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
     }
 
     public void updateFilter(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
-        applyFilter();
+        filteredList.setPredicate(this::filter);
     }
 
-    private void applyFilter() {
+    private boolean filter(FileComparison fc) {
 
-        if (object().filteredContent() == null) {
-            object().filteredContent(new ArrayList<FileComparison>());
+        if (fc.isMissing() && object().missing() ||
+                fc.isNewer() && object().newer() ||
+                fc.isUpgraded() && object().upgraded() ||
+                fc.isDowngraded() && object().downgraded() ||
+                fc.isSame() && object().same() ||
+                fc.isUpdated() && object().updated() ||
+                !object().updated() && !object().same() && !object().missing() && !object().newer() && !object().upgraded() && !object().downgraded()) {
+            return true;
         }
-        object().pFilteredContent().clear();
-
-        object().pSameCount().set(0);
-        object().pUpdatedCount().set(0);
-        object().pMissingCount().set(0);
-        object().pNewerCount().set(0);
-        object().pUpgradedCount().set(0);
-        object().pDowngradedCount().set(0);
-
-        if (object().pLastResult() != null) {
-            for (final FileComparison fc : object().pLastResult()) {
-
-                if (fc.isMissing() && object().missing() ||
-                        fc.isNewer() && object().newer() ||
-                        fc.isUpgraded() && object().upgraded() ||
-                        fc.isDowngraded() && object().downgraded() ||
-                        fc.isSame() && object().same() ||
-                        fc.isUpdated() && object().updated() ||
-                        !object().updated() && !object().same() && !object().missing() && !object().newer() && !object().upgraded() && !object().downgraded()) {
-                    object().pFilteredContent().add(fc);
-                }
-
-                if (fc.isSame()) {
-                    object().sameCount(object().sameCount() + 1);
-                } else if (fc.isUpdated()) {
-                    object().updatedCount(object().updatedCount() + 1);
-                } else if (fc.isMissing()) {
-                    object().missingCount(object().missingCount() + 1);
-                } else if (fc.isNewer()) {
-                    object().newerCount(object().newerCount() + 1);
-                } else if (fc.isUpgraded()) {
-                    object().upgradedCount(object().upgradedCount() + 1);
-                } else if (fc.isDowngraded()) {
-                    object().downgradedCount(object().downgradedCount() + 1);
-                }
-
-            }
-        }
+        return false;
     }
 
 }
