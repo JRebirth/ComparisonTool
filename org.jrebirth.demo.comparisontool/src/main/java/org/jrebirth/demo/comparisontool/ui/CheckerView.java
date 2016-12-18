@@ -199,7 +199,7 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
         final ToggleButton tb = new ToggleButton(name);
         tb.getStyleClass().add("filterButton");
         // tb.setPrefSize(120, 30);
-        tb.setBackground(new Background(new BackgroundFill(colorItem.get(), CornerRadii.EMPTY, new Insets(0))));
+        tb.setBackground(new Background(new BackgroundFill(colorItem.get(), new CornerRadii(6.0), Insets.EMPTY)));
         return tb;
     }
 
@@ -302,17 +302,17 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
 
                     final FileComparison fc = column.getTableView().getItems().get(getTableRow().getIndex());
                     if (fc.isMissing()) {
-                        setBackground(new Background(new BackgroundFill(Colors.Missing.get(), CornerRadii.EMPTY, new Insets(0))));
+                        setBackground(new Background(new BackgroundFill(Colors.Missing.get(), CornerRadii.EMPTY, Insets.EMPTY)));
                     } else if (fc.isNewer()) {
-                        setBackground(new Background(new BackgroundFill(Colors.Newer.get(), CornerRadii.EMPTY, new Insets(0))));
+                        setBackground(new Background(new BackgroundFill(Colors.Newer.get(), CornerRadii.EMPTY, Insets.EMPTY)));
                     } else if (fc.isUpgraded()) {
-                        setBackground(new Background(new BackgroundFill(Colors.Upgraded.get(), CornerRadii.EMPTY, new Insets(0))));
+                        setBackground(new Background(new BackgroundFill(Colors.Upgraded.get(), CornerRadii.EMPTY, Insets.EMPTY)));
                     } else if (fc.isDowngraded()) {
-                        setBackground(new Background(new BackgroundFill(Colors.Downgraded.get(), CornerRadii.EMPTY, new Insets(0))));
+                        setBackground(new Background(new BackgroundFill(Colors.Downgraded.get(), CornerRadii.EMPTY, Insets.EMPTY)));
                     } else if (fc.isSame()) {
-                        setBackground(new Background(new BackgroundFill(Colors.Same.get(), CornerRadii.EMPTY, new Insets(0))));
+                        setBackground(new Background(new BackgroundFill(Colors.Same.get(), CornerRadii.EMPTY, Insets.EMPTY)));
                     } else if (fc.isUpdated()) {
-                        setBackground(new Background(new BackgroundFill(Colors.Updated.get(), CornerRadii.EMPTY, new Insets(0))));
+                        setBackground(new Background(new BackgroundFill(Colors.Updated.get(), CornerRadii.EMPTY, Insets.EMPTY)));
                     } else {
                         setBackground(null);
                     }
