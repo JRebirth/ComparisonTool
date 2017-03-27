@@ -85,7 +85,7 @@ public final class CheckerController extends AbstractController<CheckerModel, Ch
         fc.setInitialFileName("Export.csv"); // to be stored
         fc.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Comma Separated Value", "*.csv"));
 
-        final File exportedFile = fc.showSaveDialog(model().localFacade().getGlobalFacade().application().stage());
+        final File exportedFile = fc.showSaveDialog(model().localFacade().globalFacade().application().stage());
 
         if (exportedFile != null) {
             if (!exportedFile.exists()) {
@@ -127,7 +127,7 @@ public final class CheckerController extends AbstractController<CheckerModel, Ch
 
         fc.setInitialDirectory(currentFolder != null && currentFolder.exists() ? currentFolder : new File("."));
 
-        return fc.showDialog(model().localFacade().getGlobalFacade().application().stage());
+        return fc.showDialog(model().localFacade().globalFacade().application().stage());
     }
 
 }
