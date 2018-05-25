@@ -7,6 +7,7 @@ import java.util.Date;
 
 import org.jrebirth.af.api.annotation.bean.Field;
 import org.jrebirth.af.api.annotation.bean.GeneratorKind;
+import org.jrebirth.demo.comparisontool.resources.ComparisonParameters;
 
 public class FileComparison implements Comparable<FileComparison> {
 
@@ -77,6 +78,14 @@ public class FileComparison implements Comparable<FileComparison> {
     public String targetDate() {
         return this.target != null ? sdf.format(new Date(this.target.lastModified())) : "";
     }
+    
+    public long sourceSize() {
+        return this.source != null ? this.source.length() : 0;
+    }
+
+    public long targetSize() {
+        return this.target != null ? this.target.length() : 0;
+    }
 
     private String name(final String s) {
         return s.substring(0, s.lastIndexOf("_"));
@@ -118,6 +127,10 @@ public class FileComparison implements Comparable<FileComparison> {
 
     public boolean isMissing() {
         return this.source == null;
+    }
+    
+    public boolean isDifferentSize() {
+        return sourceSize() / ComparisonParameters.sizeTolerance.get() != targetSize() / ComparisonParameters.sizeTolerance.get();
     }
 
     public boolean isNewer() {
@@ -161,7 +174,7 @@ public class FileComparison implements Comparable<FileComparison> {
     }
 
     public String status() {
-        if (isSame()) {
+    	if (isSame()) {
             return "Same";
         } else if (isDowngraded()) {
             return "Downgraded";
@@ -173,7 +186,9 @@ public class FileComparison implements Comparable<FileComparison> {
             return "Updated";
         } else if (isUpgraded()) {
             return "Upgraded";
-        }
+        } else if (isDifferentSize()) {
+            return "DifferentSize";
+        } 
 
         return "";
     }

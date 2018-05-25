@@ -1,2 +1,8 @@
 /Export.csv
-/FileComparison.log
+/ComparisonTool.log
+.gradle/**
+/build.gradle
+/gradle/
+/gradlew
+/gradlew.bat
+/settings.gradle

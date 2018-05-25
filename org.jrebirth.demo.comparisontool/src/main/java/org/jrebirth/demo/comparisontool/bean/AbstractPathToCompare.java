@@ -14,6 +14,7 @@ public abstract class AbstractPathToCompare {
     protected boolean downgraded;
     protected boolean same;
     protected boolean updated;
+    protected boolean differentSize;
 
     protected File sourcePath;
     protected File targetPath;
@@ -26,5 +27,6 @@ public abstract class AbstractPathToCompare {
     protected int newerCount;
     protected int upgradedCount;
     protected int downgradedCount;
+    protected int differentSizeCount;
 
 }

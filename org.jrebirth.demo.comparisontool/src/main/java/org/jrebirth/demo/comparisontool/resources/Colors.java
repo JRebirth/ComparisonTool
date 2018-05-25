@@ -17,6 +17,8 @@ public enum Colors implements ColorEnum {
 	Upgraded {{ web("FFFA91", 0.8); }},
 
 	Downgraded {{ web("C2B77A", 0.8); }},
+	
+	DifferentSize {{ web("CCCCCC", 0.8); }},
 
 	;
 

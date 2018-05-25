@@ -3,10 +3,6 @@ package org.jrebirth.demo.comparisontool;
 import java.util.Arrays;
 import java.util.List;
 
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-
 import org.jrebirth.af.api.application.Configuration;
 import org.jrebirth.af.api.resource.ResourceItem;
 import org.jrebirth.af.api.resource.font.FontItem;
@@ -15,6 +11,10 @@ import org.jrebirth.af.core.application.DefaultApplication;
 import org.jrebirth.demo.comparisontool.resources.Fonts;
 import org.jrebirth.demo.comparisontool.resources.Styles;
 import org.jrebirth.demo.comparisontool.ui.CheckerModel;
+
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 /**
  * The class <strong>ComparisonApplication</strong>.
@@ -30,7 +30,7 @@ public final class ComparisonApplication extends DefaultApplication<StackPane> {
      * @param args the command line arguments
      */
     public static void main(final String... args) {
-        launch(args);
+        preloadAndLaunch(args);
     }
 
     /**
@@ -55,6 +55,9 @@ public final class ComparisonApplication extends DefaultApplication<StackPane> {
     @Override
     protected void customizeScene(final Scene scene) {
         addCSS(scene, Styles.MAIN);
+        //FlatterFX.style();
+        //AquaFx.style();
+        //AeroFX.style();
     }
 
     /**

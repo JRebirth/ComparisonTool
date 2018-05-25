@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.m2e.Maven2LaunchConfigurationType">
 <booleanAttribute key="M2_DEBUG_OUTPUT" value="false"/>
-<stringAttribute key="M2_GOALS" value="clean install site"/>
+<stringAttribute key="M2_GOALS" value="clean install"/>
 <booleanAttribute key="M2_NON_RECURSIVE" value="false"/>
 <booleanAttribute key="M2_OFFLINE" value="false"/>
-<stringAttribute key="M2_PROFILES" value="WebStart AutoJar WinExe"/>
+<stringAttribute key="M2_PROFILES" value="AutoJar WinExe"/>
 <listAttribute key="M2_PROPERTIES">
 <listEntry value="source.path=C:\\JREBIRTH\\IDE\\eclipseMars\\plugins"/>
 <listEntry value="target.path=C:\\JREBIRTH\\IDE\\eclipseNeon\\plugins"/>
+<listEntry value="sizeTolerance=10"/>
 </listAttribute>
 <stringAttribute key="M2_RUNTIME" value="EMBEDDED"/>
 <booleanAttribute key="M2_SKIP_TESTS" value="false"/>

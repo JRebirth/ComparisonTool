@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.jrebirth</groupId>
 		<artifactId>ria</artifactId>
-		<version>3.0.0</version>
+		<version>3.0.1-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.jrebirth.demo</groupId>
@@ -27,11 +27,13 @@
 		<exeIcon>src/main/resources/images/FC.ico</exeIcon>
 		<appClass>org.jrebirth.demo.comparisontool.ComparisonApplication</appClass>
 
-		<appletWidth>800</appletWidth>
-		<appletHeight>600</appletHeight>
+		<appletWidth>1024</appletWidth>
+		<appletHeight>768</appletHeight>
 
 		<source.path></source.path>
 		<target.path></target.path>
+		<sizeTolerance></sizeTolerance>
+
 	</properties>
 
 	<build>
@@ -85,6 +87,24 @@
 			<artifactId>commons-csv</artifactId>
 			<version>1.4</version>
 		</dependency>
+
+<!-- 		<dependency>
+			<groupId>com.guigarage</groupId>
+			<artifactId>flatter</artifactId>
+			<version>0.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.aquafx-project</groupId>
+			<artifactId>aquafx</artifactId>
+			<version>0.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.aerofx</groupId>
+			<artifactId>aerofx</artifactId>
+			<version>0.2</version>
+		</dependency> -->
 
 	</dependencies>
 

@@ -1,5 +1,6 @@
 package org.jrebirth.demo.comparisontool.ui;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
@@ -18,6 +19,7 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -62,6 +64,10 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
     private static final String SOURCE_DATE_COLUMN = "SourceDate";
 
     private static final String TARGET_DATE_COLUMN = "TargetDate";
+    
+    private static final String SOURCE_SIZE_COLUMN = "SourceSize";
+
+    private static final String TARGET_SIZE_COLUMN = "TargetSize";
 
     /** The class logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckerView.class);
@@ -84,6 +90,7 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
     private ToggleButton newer;
     private ToggleButton upgraded;
     private ToggleButton downgraded;
+    private ToggleButton differentSize;
 
     private Button exportCSV;
 
@@ -169,8 +176,9 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
         this.newer = buildFilterButton("New", Colors.Newer);
         this.upgraded = buildFilterButton("Upgraded", Colors.Upgraded);
         this.downgraded = buildFilterButton("Downgraded", Colors.Downgraded);
+        this.differentSize = buildFilterButton("!Size", Colors.DifferentSize);
 
-        filterBox.getChildren().addAll(this.missing, this.newer, this.same, this.updated, this.upgraded, this.downgraded);
+        filterBox.getChildren().addAll(this.missing, this.newer, this.same, this.updated, this.upgraded, this.downgraded, this.differentSize);
         GridPane.setConstraints(filterBox, 0, 3, 4, 1, HPos.CENTER, VPos.CENTER);
 
         this.exportCSV = new Button();
@@ -235,6 +243,13 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
         sourceDateColumn.setCellValueFactory(this::getColumnContent);
         sourceDateColumn.setCellFactory(this::getTableCell);
 
+        final TableColumn<FileComparison, FileComparison> sourceSizeColumn = new TableColumn<>("Size (kb)");
+        sourceSizeColumn.setId(SOURCE_SIZE_COLUMN);
+        sourceSizeColumn.setPrefWidth(80);
+        sourceSizeColumn.setMinWidth(60);
+        sourceSizeColumn.setCellValueFactory(c-> new SimpleObjectProperty<FileComparison>(c.getValue()));
+        sourceSizeColumn.setCellFactory(this::getTableCellLong);
+        
         final TableColumn<FileComparison, String> targetNameColumn = new TableColumn<>("Name");
         targetNameColumn.setId(TARGET_COLUMN);
         targetNameColumn.setPrefWidth(150);
@@ -262,12 +277,19 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
         targetDateColumn.setMinWidth(60);
         targetDateColumn.setCellValueFactory(this::getColumnContent);
         targetDateColumn.setCellFactory(this::getTableCell);
+        
+        final TableColumn<FileComparison, FileComparison> targetSizeColumn = new TableColumn<>("Size (kb)");
+        targetSizeColumn.setId(TARGET_SIZE_COLUMN);
+        targetSizeColumn.setPrefWidth(80);
+        targetSizeColumn.setMinWidth(60);
+        targetSizeColumn.setCellValueFactory(c-> new SimpleObjectProperty<FileComparison>(c.getValue()));
+        targetSizeColumn.setCellFactory(this::getTableCellLong);
 
         final TableColumn<FileComparison, String> sourceColumn = new TableColumn<>("New Path");
-        sourceColumn.getColumns().setAll(sourceNameColumn, sourceVersionColumn, sourceQualifierColumn, sourceDateColumn);
+        sourceColumn.getColumns().setAll(sourceNameColumn, sourceVersionColumn, sourceQualifierColumn, sourceDateColumn, sourceSizeColumn);
 
         final TableColumn<FileComparison, String> targetColumn = new TableColumn<>("Reference Path");
-        targetColumn.getColumns().setAll(targetNameColumn, targetVersionColumn, targetQualifierColumn, targetDateColumn);
+        targetColumn.getColumns().setAll(targetNameColumn, targetVersionColumn, targetQualifierColumn, targetDateColumn, targetSizeColumn);
 
         this.table.getColumns().setAll(sourceColumn, targetColumn);
 
@@ -320,10 +342,69 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
                 }
             }
         };
-        tc.setAlignment(Pos.CENTER);
+        switch(column.getId()) {
+        	case SOURCE_COLUMN:
+        	case TARGET_COLUMN:
+        		tc.setAlignment(Pos.CENTER_LEFT);
+        		break;
+        		default:
+        			tc.setAlignment(Pos.CENTER);
+        }
         return tc;
     }
+    
+    private TableCell<FileComparison, FileComparison> getTableCellLong(final TableColumn<FileComparison, FileComparison> column) {
+        final TableCell<FileComparison, FileComparison> tc = new TableCell<FileComparison, FileComparison>() {
+            @Override
+            protected void updateItem(final FileComparison item, final boolean empty) {
+                super.updateItem(item, empty);
 
+                if (item == null || empty) {
+                    setText(null);
+                    setStyle("");
+                    setBackground(null);
+                } else {
+                    setAlignment(Pos.CENTER);
+                    switch(column.getId()) {
+                    	case SOURCE_SIZE_COLUMN:
+                    		setText(String.valueOf(item.sourceSize()/1024));
+                    		long src = item.sourceSize() - item.targetSize();
+                    		String deltaSrc = ((src>0)? "+": "") + src;
+                    		setTooltip(new Tooltip(String.valueOf(item.sourceSize()) + " bytes \r\n (" + deltaSrc + " bytes)")  );
+                    		break;
+                    	case TARGET_SIZE_COLUMN:
+                    		setText(String.valueOf(item.targetSize()/1024));
+                    		long tgt = item.targetSize() - item.sourceSize();
+                    		String deltaTgt = ((tgt>0)? "+": "") + tgt;
+                    		setTooltip(new Tooltip(String.valueOf(item.targetSize()) + " bytes \\r\\n (" + deltaTgt + " bytes)")  );
+                    		break;
+                    }
+
+                    final FileComparison fc = column.getTableView().getItems().get(getTableRow().getIndex());
+                    if (fc.isMissing()) {
+                        setBackground(new Background(new BackgroundFill(Colors.Missing.get(), CornerRadii.EMPTY, Insets.EMPTY)));
+                    } else if (fc.isNewer()) {
+                        setBackground(new Background(new BackgroundFill(Colors.Newer.get(), CornerRadii.EMPTY, Insets.EMPTY)));
+                    } else if (fc.isUpgraded()) {
+                        setBackground(new Background(new BackgroundFill(Colors.Upgraded.get(), CornerRadii.EMPTY, Insets.EMPTY)));
+                    } else if (fc.isDowngraded()) {
+                        setBackground(new Background(new BackgroundFill(Colors.Downgraded.get(), CornerRadii.EMPTY, Insets.EMPTY)));
+                    } else if (fc.isSame()) {
+                        setBackground(new Background(new BackgroundFill(Colors.Same.get(), CornerRadii.EMPTY, Insets.EMPTY)));
+                    } else if (fc.isUpdated()) {
+                        setBackground(new Background(new BackgroundFill(Colors.Updated.get(), CornerRadii.EMPTY, Insets.EMPTY)));
+                    } else {
+                        setBackground(null);
+                    }
+
+                }
+            }
+        };
+		
+		return tc;
+    }
+
+    
     private ObservableValue<String> getColumnContent(final CellDataFeatures<FileComparison, String> cell) {
         String res = null;
 
@@ -453,6 +534,13 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
     ToggleButton getDowngraded() {
         return this.downgraded;
     }
+    
+    /**
+     * @return the differentSize
+     */
+    ToggleButton getDifferentSize() {
+        return this.differentSize;
+    }
 
     public void hideProgress() {
         this.ppu.stop();
@@ -480,5 +568,10 @@ public final class CheckerView extends AbstractView<CheckerModel, BorderPane, Ch
     protected Button getExportCSV() {
         return this.exportCSV;
     }
+
+	@Override
+	protected void bootView() {
+		
+	}
 
 }

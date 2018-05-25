@@ -51,7 +51,8 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
                 .missing(false)
                 .newer(false)
                 .upgraded(false)
-                .downgraded(false);
+                .downgraded(false)
+                .differentSize(false);
 
         filteredList = new FilteredList<>(object().pLastResult(), this::filter);
         sortedList = new SortedList<>(filteredList);
@@ -120,6 +121,7 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         view().getSame().disableProperty().bind(listProperty.emptyProperty());
         view().getUpdated().disableProperty().bind(listProperty.emptyProperty());
         view().getUpgraded().disableProperty().bind(listProperty.emptyProperty());
+        view().getDifferentSize().disableProperty().bind(listProperty.emptyProperty());
     }
 
     private void bindFilterButton() {
@@ -129,6 +131,7 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         Bindings.bindBidirectional(view().getNewer().selectedProperty(), object().pNewer());
         Bindings.bindBidirectional(view().getUpgraded().selectedProperty(), object().pUpgraded());
         Bindings.bindBidirectional(view().getDowngraded().selectedProperty(), object().pDowngraded());
+        Bindings.bindBidirectional(view().getDifferentSize().selectedProperty(), object().pDifferentSize());
 
         view().getSame().textProperty().bind(object().pSameCount().asString("Same (%s)"));
         view().getUpdated().textProperty().bind(object().pUpdatedCount().asString("Updated (%s)"));
@@ -136,6 +139,7 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         view().getNewer().textProperty().bind(object().pNewerCount().asString("Newer (%s)"));
         view().getUpgraded().textProperty().bind(object().pUpgradedCount().asString("Upgraded (%s)"));
         view().getDowngraded().textProperty().bind(object().pDowngradedCount().asString("Downgraded (%s)"));
+        view().getDifferentSize().textProperty().bind(object().pDifferentSizeCount().asString("!Size (%s)"));
 
         object().pSame().addListener(this::updateFilter);
         object().pDowngraded().addListener(this::updateFilter);
@@ -143,6 +147,7 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         object().pNewer().addListener(this::updateFilter);
         object().pUpdated().addListener(this::updateFilter);
         object().pUpgraded().addListener(this::updateFilter);
+        object().pDifferentSize().addListener(this::updateFilter);
     }
 
     /**
@@ -164,6 +169,7 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
         object().pNewerCount().set((int) result.stream().filter(fc -> fc.isNewer()).count());
         object().pUpgradedCount().set((int) result.stream().filter(fc -> fc.isUpgraded()).count());
         object().pDowngradedCount().set((int) result.stream().filter(fc -> fc.isDowngraded()).count());
+        object().pDifferentSizeCount().set((int) result.stream().filter(fc -> fc.isDifferentSize()).count());
 
         view().hideProgress();
     }
@@ -202,7 +208,8 @@ public final class CheckerModel extends DefaultObjectModel<CheckerModel, Checker
                 fc.isDowngraded() && object().downgraded() ||
                 fc.isSame() && object().same() ||
                 fc.isUpdated() && object().updated() ||
-                !object().updated() && !object().same() && !object().missing() && !object().newer() && !object().upgraded() && !object().downgraded()) {
+                fc.isDifferentSize() && object().differentSize() ||
+                !object().updated() && !object().same() && !object().missing() && !object().newer() && !object().upgraded() && !object().downgraded() && !object().differentSize()) {
             return true;
         }
         return false;
