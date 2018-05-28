@@ -21,7 +21,7 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<jrebirth.version>8.5.1-SNAPSHOT</jrebirth.version>
+		<jrebirth.version>8.6.0-SNAPSHOT</jrebirth.version>
 
 		<archiveName>ComparisonTool</archiveName>
 		<exeIcon>src/main/resources/images/FC.ico</exeIcon>
