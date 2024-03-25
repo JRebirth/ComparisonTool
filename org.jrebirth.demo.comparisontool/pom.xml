@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>org.jrebirth</groupId>
 		<artifactId>ria</artifactId>
-		<version>3.0.1-SNAPSHOT</version>
+		<version>4.0.0-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.jrebirth.demo</groupId>
 	<artifactId>comparisontool</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Comparison Tool Comparator</name>
@@ -21,18 +23,26 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<jrebirth.version>8.6.0-SNAPSHOT</jrebirth.version>
+		<jrebirth.version>9.0.0-SNAPSHOT</jrebirth.version>
+		<openjfx.version>21.0.3-ea+1</openjfx.version>
 
+		<resources.base.path>org/jrebirth/demo/comparisontool</resources.base.path>
+
+		<vendor>JRebirth</vendor>
 		<archiveName>ComparisonTool</archiveName>
+		<appName>Comparison Tool</appName>
 		<exeIcon>src/main/resources/images/FC.ico</exeIcon>
+		<mainModule>org.jrebirth.demo.comparisontool</mainModule>
 		<appClass>org.jrebirth.demo.comparisontool.ComparisonApplication</appClass>
+		<appVersion>2.0.0</appVersion>
+
 
 		<appletWidth>1024</appletWidth>
 		<appletHeight>768</appletHeight>
 
-		<source.path></source.path>
-		<target.path></target.path>
-		<sizeTolerance></sizeTolerance>
+		<source.path>D:\DEV\IDE\eclipse-2023-12\plugins</source.path>
+		<target.path>D:\DEV\IDE\eclipse-2023-12\plugins</target.path>
+		<sizeTolerance>10</sizeTolerance>
 
 	</properties>
 
@@ -40,15 +50,224 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.4</version>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<release>21</release>
+					<encoding>UTF-8</encoding>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.jrebirth.af</groupId>
+							<artifactId>processor</artifactId>
+							<version>${jrebirth.version}</version>
+							<classifier>4ide</classifier>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
+			<!--<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>3.6.1</version>
+						<executions>
+							<execution>
+								<id>copy</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-dependencies</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<includeScope>compile</includeScope>
+						</configuration>
+					</plugin>-->
+					
+								<plugin>
+				<groupId>com.github.akman</groupId>
+				<artifactId>jpackage-maven-plugin</artifactId>
+				<version>0.1.5</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.ow2.asm</groupId>
+						<artifactId>asm</artifactId>
+						<version>9.6</version>
+					</dependency>
+				</dependencies>
+
 				<executions>
 					<execution>
-						<id>attach-sources</id>
+						<id>Build-App</id>
+						<phase>package</phase>
 						<goals>
-							<goal>jar-no-fork</goal>
-							<!-- <goal>test-jar-no-fork</goal> -->
+							<goal>jpackage</goal>
 						</goals>
+						<configuration>
+
+							<type>IMAGE</type>
+							<dest>${project.build.directory}/image</dest>
+
+							<javaoptions>
+								-Dfile.encoding=UTF-8 -Xms256m -Xmx512m -Dlogback.configurationFile=runtime/conf/logback.xml</javaoptions>
+							<resourcedir>src/main/jpackage</resourcedir>
+							<name>${appName}</name>
+							<appversion>${appVersion}</appversion>
+							<copyright>Copyright 2024 JRebirth</copyright>
+							<description>JRebirth Sample Application</description>
+
+							<vendor>${vendor}</vendor>
+							<icon>${exeIcon}</icon>
+
+<addlaunchers>
+								<addlauncher>
+									<name>${archiveName}-Debug</name>
+									<arguments></arguments>
+									<javaoptions>
+										-Xms128m
+										-Xmx1024m
+										-Dlogback.configurationFile=runtime/conf/logback.xml</javaoptions>
+									<winconsole>
+										true</winconsole>
+								</addlauncher>
+							</addlaunchers>
+							
+							<module>${mainModule}/${appClass}</module>
+							<modulepath>
+								<pathelements>
+									<pathelement>
+										${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</pathelement>
+								</pathelements>
+								<dependencysets>
+									<dependencyset>
+										<includeoutput>false</includeoutput>
+										<excludeautomatic>true</excludeautomatic>
+										<includenames>
+											<includename>.*</includename>
+										</includenames>
+									</dependencyset>
+								</dependencysets>
+								<filesets>
+									<fileset>
+										<directory>
+											${project.build.directory}/patched-module</directory>
+										<includes>
+											<include>*.jar</include>
+										</includes>
+									</fileset>
+								</filesets>
+							</modulepath>
+
+
+						</configuration>
+					</execution>
+				</executions>
+								</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.3.1</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.directory}/image/${appName}/runtime/conf</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/jpackage</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.github.akman</groupId>
+				<artifactId>jpackage-maven-plugin</artifactId>
+				<version>0.1.5</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.ow2.asm</groupId>
+						<artifactId>asm</artifactId>
+						<version>9.6</version>
+					</dependency>
+				</dependencies>
+
+				<executions>
+					<execution>
+						<id>Package-App</id>
+						<phase>install</phase>
+						<goals>
+							<goal>jpackage</goal>
+						</goals>
+						<configuration>
+
+							<!--<javaoptions>-Dfile.encoding=UTF-8 -Xms256m -Xmx512m</javaoptions>
+							<resourcedir>src/main/jpackage</resourcedir>-->
+							<type>EXE</type>
+							<dest>${project.build.directory}/installer</dest>
+
+							<name>${appName}</name>
+							<appversion>${appVersion}</appversion>
+							<copyright>Copyright 2024 JRebirth</copyright>
+							<description>JRebirth Sample Application</description>
+
+							<vendor>${vendor}</vendor>
+							<installdir>${vendor}/${appName}</installdir>
+							<icon>${exeIcon}</icon>
+
+							<!--<module>${mainModule}/${appClass}</module>-->
+							<appimage>${project.build.directory}/image/"${appName}"</appimage>
+							<temp>${project.build.directory}/generated-installer</temp>
+
+							<winmenu>true</winmenu>
+							<windirchooser>true</windirchooser>
+							<winmenugroup>${vendor}</winmenugroup>
+							<winshortcut>true</winshortcut>
+							<winconsole>false</winconsole>
+							<winperuserinstall>false</winperuserinstall>
+
+						</configuration>
+					</execution>
+				</executions>
+
+
+			</plugin>
+
+			<plugin>
+				<groupId>org.moditect</groupId>
+				<artifactId>moditect-maven-plugin</artifactId>
+				<version>1.0.0.Final</version>
+				<executions>
+					<execution>
+						<id>add-module-infos</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>add-module-info</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.directory}/patched-module</outputDirectory>
+							<modules>
+								<module>
+									<artifact>
+										<groupId>org.apache.commons</groupId>
+										<artifactId>commons-csv</artifactId>
+										<version>1.10.0</version>
+									</artifact>
+									<moduleInfoSource>
+										module org.apache.commons.csv {
+										exports org.apache.commons.csv;
+										}
+									</moduleInfoSource>
+								</module>
+							</modules>
+							<overwriteExistingFiles>true</overwriteExistingFiles>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -60,12 +279,37 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.0.13</version>
+			<version>1.4.14</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>${openjfx.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-base</artifactId>
+			<version>${openjfx.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>${openjfx.version}</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.jrebirth.af</groupId>
 			<artifactId>preloader</artifactId>
+			<version>${jrebirth.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jrebirth.af</groupId>
+			<artifactId>api</artifactId>
 			<version>${jrebirth.version}</version>
 		</dependency>
 
@@ -77,18 +321,30 @@
 
 		<dependency>
 			<groupId>org.jrebirth.af</groupId>
+			<artifactId>component</artifactId>
+			<version>${jrebirth.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jrebirth.af</groupId>
+					<artifactId>processor</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!--		<dependency>
+			<groupId>org.jrebirth.af</groupId>
 			<artifactId>processor</artifactId>
 			<version>${jrebirth.version}</version>
-			<scope>provided</scope>
-		</dependency>
+			<classifier>4ide</classifier>
+		</dependency>-->
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
-			<version>1.4</version>
+			<version>1.10.0</version>
 		</dependency>
 
-<!-- 		<dependency>
+		<!-- 		<dependency>
 			<groupId>com.guigarage</groupId>
 			<artifactId>flatter</artifactId>
 			<version>0.7</version>

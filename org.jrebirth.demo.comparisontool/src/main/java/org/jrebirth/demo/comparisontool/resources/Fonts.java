@@ -1,13 +1,13 @@
 package org.jrebirth.demo.comparisontool.resources;
 
-import static org.jrebirth.af.core.resource.Resources.create;
+import org.jrebirth.af.api.resource.font.FontExtension;
+import org.jrebirth.af.core.resource.font.FontEnum;
 
-import org.jrebirth.af.api.resource.font.FontItem;
-import org.jrebirth.af.core.resource.font.RealFont;
+public enum Fonts implements FontEnum {
 
-public interface Fonts {
+    // @formatter:off
 
-    /** The splash font. */
-    FontItem MAIN = create(new RealFont(FontNames.DoulosSIL, 16));
+	/** The splash font. */
+	MAIN {{ real(FontNames.DoulosSIL, 16, FontExtension.TTF); }};
 
 }

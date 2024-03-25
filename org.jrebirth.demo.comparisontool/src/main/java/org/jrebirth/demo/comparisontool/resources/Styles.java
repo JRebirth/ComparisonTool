@@ -8,6 +8,6 @@ import org.jrebirth.af.core.resource.style.StyleSheet;
 public interface Styles {
 
     /** The application main style sheet. */
-    StyleSheetItem MAIN = create(new StyleSheet("Comparison"));
+    StyleSheetItem MAIN = create(new StyleSheet("Comparison")).module(Styles.class.getModule());
 
 }

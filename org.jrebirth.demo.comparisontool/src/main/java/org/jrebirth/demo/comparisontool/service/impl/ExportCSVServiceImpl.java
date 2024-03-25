@@ -6,15 +6,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.jrebirth.af.api.module.Register;
 import org.jrebirth.af.api.wave.Wave;
 import org.jrebirth.af.core.exception.ServiceException;
 import org.jrebirth.af.core.service.DefaultService;
 import org.jrebirth.demo.comparisontool.bean.FileComparison;
 import org.jrebirth.demo.comparisontool.service.ExportCSVService;
-
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

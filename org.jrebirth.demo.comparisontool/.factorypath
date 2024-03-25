@@ -1,3 +1,4 @@
 <factorypath>
-    <factorypathentry kind="WKSPJAR" id="/org.jrebirth.af.processor/target/JRebirth-AnnotationProcessor-8.5.1-SNAPSHOT.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="WKSPJAR" id="/org.jrebirth.af.processor/target/JRebirth-AnnotationProcessor-8.5.1-SNAPSHOT.jar" enabled="false" runInBatchMode="false"/>
+    <factorypathentry kind="WKSPJAR" id="/org.jrebirth.af.processor/target/JRebirth-AnnotationProcessor-9.0.0-SNAPSHOT-4ide.jar" enabled="false" runInBatchMode="false"/>
 </factorypath>
