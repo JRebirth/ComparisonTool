@@ -21,6 +21,7 @@ open module org.jrebirth.demo.comparisontool {
 	
 	requires transitive org.jrebirth.af.api;
 	requires org.jrebirth.af.core;
+    requires org.jrebirth.af.resources;
 	requires org.jrebirth.af.component;
 
 	requires java.naming;

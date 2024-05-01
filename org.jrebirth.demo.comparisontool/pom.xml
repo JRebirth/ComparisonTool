@@ -65,25 +65,7 @@
 				</configuration>
 			</plugin>
 
-			<!--<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<version>3.6.1</version>
-						<executions>
-							<execution>
-								<id>copy</id>
-								<phase>package</phase>
-								<goals>
-									<goal>copy-dependencies</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<includeScope>compile</includeScope>
-						</configuration>
-					</plugin>-->
-					
-								<plugin>
+			<plugin>
 				<groupId>com.github.akman</groupId>
 				<artifactId>jpackage-maven-plugin</artifactId>
 				<version>0.1.5</version>
@@ -106,9 +88,8 @@
 
 							<type>IMAGE</type>
 							<dest>${project.build.directory}/image</dest>
-
-							<javaoptions>
-								-Dfile.encoding=UTF-8 -Xms256m -Xmx512m -Dlogback.configurationFile=runtime/conf/logback.xml</javaoptions>
+							<arguments>--jrebirth.configurationFolder=runtime/conf</arguments>
+							<javaoptions>-Dfile.encoding=UTF-8 -Xms128m -Xmx1024m -Dlogback.configurationFile=runtime/conf/logback.xml</javaoptions>
 							<resourcedir>src/main/jpackage</resourcedir>
 							<name>${appName}</name>
 							<appversion>${appVersion}</appversion>
@@ -118,24 +99,19 @@
 							<vendor>${vendor}</vendor>
 							<icon>${exeIcon}</icon>
 
-<addlaunchers>
+							<addlaunchers>
 								<addlauncher>
 									<name>${archiveName}-Debug</name>
-									<arguments></arguments>
-									<javaoptions>
-										-Xms128m
-										-Xmx1024m
-										-Dlogback.configurationFile=runtime/conf/logback.xml</javaoptions>
-									<winconsole>
-										true</winconsole>
+									<arguments>--jrebirth.configurationFolder=runtime/conf</arguments>
+									<javaoptions>-Dfile.encoding=UTF-8 -Xms128m -Xmx1024m -Dlogback.configurationFile=runtime/conf/logback.xml</javaoptions>
+									<winconsole>true</winconsole>
 								</addlauncher>
 							</addlaunchers>
-							
+
 							<module>${mainModule}/${appClass}</module>
 							<modulepath>
 								<pathelements>
-									<pathelement>
-										${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</pathelement>
+									<pathelement>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</pathelement>
 								</pathelements>
 								<dependencysets>
 									<dependencyset>
@@ -148,8 +124,7 @@
 								</dependencysets>
 								<filesets>
 									<fileset>
-										<directory>
-											${project.build.directory}/patched-module</directory>
+										<directory>${project.build.directory}/patched-module</directory>
 										<includes>
 											<include>*.jar</include>
 										</includes>
@@ -161,7 +136,7 @@
 						</configuration>
 					</execution>
 				</executions>
-								</plugin>
+			</plugin>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.3.1</version>
@@ -173,8 +148,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>
-								${project.build.directory}/image/${appName}/runtime/conf</outputDirectory>
+							<outputDirectory>${project.build.directory}/image/${appName}/runtime/conf</outputDirectory>
 							<resources>
 								<resource>
 									<directory>src/main/jpackage</directory>
@@ -206,8 +180,6 @@
 						</goals>
 						<configuration>
 
-							<!--<javaoptions>-Dfile.encoding=UTF-8 -Xms256m -Xmx512m</javaoptions>
-							<resourcedir>src/main/jpackage</resourcedir>-->
 							<type>EXE</type>
 							<dest>${project.build.directory}/installer</dest>
 
@@ -217,10 +189,9 @@
 							<description>JRebirth Sample Application</description>
 
 							<vendor>${vendor}</vendor>
-							<installdir>${vendor}/${appName}</installdir>
+							<installdir>${appName}</installdir>
 							<icon>${exeIcon}</icon>
 
-							<!--<module>${mainModule}/${appClass}</module>-->
 							<appimage>${project.build.directory}/image/"${appName}"</appimage>
 							<temp>${project.build.directory}/generated-installer</temp>
 
@@ -261,7 +232,7 @@
 									</artifact>
 									<moduleInfoSource>
 										module org.apache.commons.csv {
-										exports org.apache.commons.csv;
+											exports org.apache.commons.csv;
 										}
 									</moduleInfoSource>
 								</module>
@@ -282,6 +253,7 @@
 			<version>1.4.14</version>
 		</dependency>
 
+		<!-- JavaFX -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-graphics</artifactId>
@@ -300,7 +272,7 @@
 			<version>${openjfx.version}</version>
 		</dependency>
 
-
+		<!-- JRebirth -->
 		<dependency>
 			<groupId>org.jrebirth.af</groupId>
 			<artifactId>preloader</artifactId>
@@ -309,13 +281,13 @@
 
 		<dependency>
 			<groupId>org.jrebirth.af</groupId>
-			<artifactId>api</artifactId>
+			<artifactId>core</artifactId>
 			<version>${jrebirth.version}</version>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>org.jrebirth.af</groupId>
-			<artifactId>core</artifactId>
+			<artifactId>resources</artifactId>
 			<version>${jrebirth.version}</version>
 		</dependency>
 

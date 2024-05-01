@@ -78,7 +78,7 @@ public class FileComparison implements Comparable<FileComparison> {
     public String targetDate() {
         return this.target != null ? sdf.format(new Date(this.target.lastModified())) : "";
     }
-    
+
     public long sourceSize() {
         return this.source != null ? this.source.length() : 0;
     }
@@ -88,7 +88,14 @@ public class FileComparison implements Comparable<FileComparison> {
     }
 
     private String name(final String s) {
-        return s.substring(0, s.lastIndexOf("_"));
+        return substringToStringIfExist(s, "_");
+    }
+
+    private String substringToStringIfExist(String str, String delimiter) {
+        if (str.indexOf(delimiter) > 0) {
+            str.substring(0, str.lastIndexOf(delimiter));
+        }
+        return str;
     }
 
     private String version(String s) {
@@ -128,9 +135,10 @@ public class FileComparison implements Comparable<FileComparison> {
     public boolean isMissing() {
         return this.source == null;
     }
-    
+
     public boolean isDifferentSize() {
-        return sourceSize() / ComparisonParameters.sizeTolerance.get() != targetSize() / ComparisonParameters.sizeTolerance.get();
+        return sourceSize() / ComparisonParameters.sizeTolerance.get() != targetSize()
+                / ComparisonParameters.sizeTolerance.get();
     }
 
     public boolean isNewer() {
@@ -138,10 +146,9 @@ public class FileComparison implements Comparable<FileComparison> {
     }
 
     public boolean isUpgraded() {
-        return this.source != null && this.target != null &&
-                sourceName().equals(targetName()) &&
-                (compareVersion(sourceVersion(), targetVersion()) > 0 ||
-                        sourceVersion().equals(targetVersion()) && sourceQualifier().compareTo(targetQualifier()) > 0);
+        return this.source != null && this.target != null && sourceName().equals(targetName())
+                && (compareVersion(sourceVersion(), targetVersion()) > 0 || sourceVersion().equals(targetVersion())
+                        && sourceQualifier().compareTo(targetQualifier()) > 0);
     }
 
     private int compareVersion(final String sourceVersion, final String targetVersion) {
@@ -162,10 +169,9 @@ public class FileComparison implements Comparable<FileComparison> {
     }
 
     public boolean isDowngraded() {
-        return this.source != null && this.target != null &&
-                sourceName().equals(targetName()) &&
-                (compareVersion(sourceVersion(), targetVersion()) < 0 ||
-                        sourceVersion().equals(targetVersion()) && sourceQualifier().compareTo(targetQualifier()) < 0);
+        return this.source != null && this.target != null && sourceName().equals(targetName())
+                && (compareVersion(sourceVersion(), targetVersion()) < 0 || sourceVersion().equals(targetVersion())
+                        && sourceQualifier().compareTo(targetQualifier()) < 0);
     }
 
     @Override
@@ -174,7 +180,7 @@ public class FileComparison implements Comparable<FileComparison> {
     }
 
     public String status() {
-    	if (isSame()) {
+        if (isSame()) {
             return "Same";
         } else if (isDowngraded()) {
             return "Downgraded";
@@ -188,7 +194,7 @@ public class FileComparison implements Comparable<FileComparison> {
             return "Upgraded";
         } else if (isDifferentSize()) {
             return "DifferentSize";
-        } 
+        }
 
         return "";
     }
