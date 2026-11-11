@@ -23,7 +23,7 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<jrebirth.version>9.0.0-SNAPSHOT</jrebirth.version>
+		<jrebirth.version>12.0.0-SNAPSHOT</jrebirth.version>
 		<openjfx.version>21.0.3-ea+1</openjfx.version>
 
 		<resources.base.path>org/jrebirth/demo/comparisontool</resources.base.path>
@@ -336,4 +336,18 @@
 
 	</dependencies>
 
+
+	<profiles>
+		<profile>
+			<id>github-packages</id>
+			<properties>
+				<repositoryId>github</repositoryId>
+				<repositoryName>GitHub Packages Releases</repositoryName>
+				<repositoryUrl>https://maven.pkg.github.com/JRebirth/ComparisonTool</repositoryUrl>
+				<snapshotRepositoryId>github</snapshotRepositoryId>
+				<snapshotRepositoryName>GitHub Packages Snapshots</snapshotRepositoryName>
+				<snapshotRepositoryUrl>https://maven.pkg.github.com/JRebirth/ComparisonTool</snapshotRepositoryUrl>
+			</properties>
+		</profile>
+	</profiles>
 </project>
